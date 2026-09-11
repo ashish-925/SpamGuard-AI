@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpamGuard AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(circle at top left, #263b80 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #5b247a 0%, transparent 35%),
+                #0b1020;
+
+            color: #ffffff;
+            padding: 40px 20px;
+        }
+
+        /* Main container */
+
+        .page {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 18px;
+
+            background: linear-gradient(
+                135deg,
+                #4f7cff,
+                #8b5cf6
+            );
+
+            font-size: 30px;
+
+            box-shadow:
+                0 10px 30px rgba(79, 124, 255, 0.35);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: #aeb8d4;
+            font-size: 17px;
+        }
+
+        /* Main grid */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 22px;
+        }
+
+        /* Cards */
+
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+
+            border-radius: 22px;
+
+            padding: 28px;
+
+            backdrop-filter: blur(18px);
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .card h2 {
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #9ca8c7;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Textarea */
+
+        textarea {
+            width: 100%;
+            height: 230px;
+
+            resize: vertical;
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            background: rgba(5, 10, 25, 0.75);
+
+            color: white;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.25s;
+        }
+
+        textarea::placeholder {
+            color: #687491;
+        }
+
+        textarea:focus {
+            border-color: #5d7cff;
+
+            box-shadow:
+                0 0 0 3px rgba(93, 124, 255, 0.12);
+        }
+
+        /* Character count */
+
+        .textarea-footer {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 8px;
+
+            color: #707c9d;
+
+            font-size: 12px;
+        }
+
+        /* Buttons */
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+
+            border-radius: 12px;
+
+            padding: 13px 20px;
+
+            font-size: 15px;
+
+            transition: 0.2s;
+        }
+
+        .check-btn {
+            flex: 1;
+
+            color: white;
+
+            background: linear-gradient(
+                135deg,
+                #4f7cff,
+                #7048e8
+            );
+
+            box-shadow:
+                0 8px 20px rgba(79, 124, 255, 0.25);
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 25px rgba(79, 124, 255, 0.35);
+        }
+
+        .clear-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: #b9c2d8;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.13);
+        }
+
+        /* Result */
+
+        .result {
+            margin-top: 22px;
+
+            padding: 20px;
+
+            border-radius: 16px;
+
+            text-align: center;
+        }
+
+        .spam {
+            background: rgba(239, 68, 68, 0.13);
+
+            border: 1px solid rgba(239, 68, 68, 0.3);
+
+            color: #ff7b7b;
+        }
+
+        .safe {
+            background: rgba(34, 197, 94, 0.13);
+
+            border: 1px solid rgba(34, 197, 94, 0.3);
+
+            color: #62e58b;
+        }
+
+        .result-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .result h3 {
+            font-size: 22px;
+            margin-bottom: 7px;
+        }
+
+        .confidence {
+            color: #b5bfd6;
+            font-size: 14px;
+        }
+
+        /* Example emails */
+
+        .examples {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .example {
+            text-align: left;
+
+            background: rgba(255,255,255,0.05);
+
+            color: #c5cde0;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            padding: 13px;
+
+            font-size: 13px;
+
+            border-radius: 12px;
+        }
+
+        .example:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(93,124,255,0.4);
+        }
+
+        /* How it works */
+
+        .steps {
+            margin-top: 22px;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .step {
+            padding: 20px;
+
+            text-align: center;
+
+            background: rgba(255,255,255,0.05);
+
+            border-radius: 16px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .step-icon {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .step h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            color: #8792ad;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 28px;
+
+            color: #69748f;
+
+            font-size: 12px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 800px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <div class="logo">
+            🛡️
+        </div>
+
+        <h1>SpamGuard AI</h1>
+
+        <p>
+            AI that knows what’s sus and what’s safe. 👀
+        </p>
+
+    </div>
+
+
+    <!-- Main -->
+
+    <div class="grid">
+
+
+        <!-- Email checker -->
+
+        <div class="card">
+
+            <h2>🔍 Analyze a Message</h2>
+
+            <p class="card-description">
+                Got a suspicious message? Let’s check it.
+            </p>
+
+
+            <form method="POST" id="emailForm">
+
+                {% csrf_token %}
+
+                <textarea
+                    id="emailText"
+                    name="email"
+                    maxlength="5000"
+                    placeholder="Paste your email message here..."
+                    required
+                >{{ request.POST.email }}</textarea>
+
+
+                <div class="textarea-footer">
+
+                    <span id="counter">
+                        0 / 5000
+                    </span>
+
+                </div>
+
+
+                <div class="buttons">
+
+                    <button
+                        type="submit"
+                        class="check-btn"
+                        id="checkButton"
+                    >
+                        🚀 Analyze Email
+                    </button>
+
+                    <button
+                        type="button"
+                        class="clear-btn"
+                        onclick="clearText()"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            {% if result %}
+
+            <div class="result {% if is_spam %}spam{% else %}safe{% endif %}">
+
+                <div class="result-icon">
+
+                    {% if is_spam %}
+                        🚨
+                    {% else %}
+                        ✅
+                    {% endif %}
+
+                </div>
+
+                <h3>
+                    {{ result }}
+                </h3>
+
+                {% if confidence %}
+                    <div class="confidence">
+                        Model confidence: {{ confidence }}%
+                    </div>
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Demo examples -->
+
+        <div class="card">
+
+            <h2>💡 Quick Demo</h2>
+
+            <p class="card-description">
+                Click an example to automatically load a message.
+            </p>
+
+
+            <div class="examples">
+
+                <button
+                    class="example"
+                    onclick="useExample('Congratulations! You have won $1,000,000 in our international lottery. Claim your prize now by clicking the link below. This offer expires today.')"
+                >
+                    🚨 Lottery Prize
+                </button>
+
+
+                <button
+                    class="example"
+                    onclick="useExample('URGENT! Your account has been selected for verification. Click the link below and confirm your username and password immediately.')"
+                >
+                    🔐 Account Warning
+                </button>
+
+
+                <button
+                    class="example"
+                    onclick="useExample('Congratulations! You have been pre-approved for a $50,000 instant loan with 0% interest. No credit check required.')"
+                >
+                    💰 Fake Loan
+                </button>
+
+
+                <button
+                    class="example"
+                    onclick="useExample('Hi team, our project meeting is scheduled for tomorrow at 10 AM. Please bring your progress updates.')"
+                >
+                    📅 Normal Meeting
+                </button>
+
+
+                <button
+                    class="example"
+                    onclick="useExample('Hi, are you free this evening? We are planning to watch a movie around 7 PM. Let me know if you want to join.')"
+                >
+                    💬 Normal Message
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- How it works -->
+
+    <div class="card" style="margin-top:22px;">
+
+        <h2>⚙️ How It Works</h2>
+
+        <p class="card-description">
+            Your email passes through three simple machine-learning stages.
+        </p>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-icon">
+                    📝
+                </div>
+
+                <h3>Email Input</h3>
+
+                <p>
+                    The message entered by the user is received by Django.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">
+                    🔢
+                </div>
+
+                <h3>TF-IDF</h3>
+
+                <p>
+                    Text is converted into numerical features that the ML model can understand.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-icon">
+                    🤖
+                </div>
+
+                <h3>Prediction</h3>
+
+                <p>
+                    Logistic Regression classifies the message as Spam or Not Spam.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        SpamGuard AI • Machine Learning Spam Detection • Django
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const textarea = document.getElementById("emailText");
+    const counter = document.getElementById("counter");
+    const form = document.getElementById("emailForm");
+    const button = document.getElementById("checkButton");
+
+
+    /* Character counter */
+
+    function updateCounter() {
+
+        counter.textContent =
+            textarea.value.length + " / 5000";
+
+    }
+
+    textarea.addEventListener(
+        "input",
+        updateCounter
+    );
+
+    updateCounter();
+
+
+    /* Clear */
+
+    function clearText() {
+
+        textarea.value = "";
+
+        updateCounter();
+
+        textarea.focus();
+
+    }
+
+
+    /* Demo examples */
+
+    function useExample(text) {
+
+        textarea.value = text;
+
+        updateCounter();
+
+        textarea.focus();
+
+    }
+
+
+    /* Loading effect */
+
+    form.addEventListener("submit", function() {
+
+        button.innerHTML = "⏳ Analyzing...";
+
+        button.disabled = true;
+
+    });
+
+</script>
+
+</body>
+
+</html>
